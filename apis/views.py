@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from apis.models import Restaurants
+from apis.serializers import RestaurantSerializer
 
 
 # Create your views here.
@@ -27,8 +28,10 @@ def open_res(request):
             opened_list = []
             for r in rlist:
                 if not r.hours[today]['is_closed']:  # is_closed = False
-                    opened_list.append(r.name)
-            return JsonResponse(opened_list, safe = False)
+                    # obj = RestaurantSerializer(r)
+                    opened_list.append(r)
+            obj = RestaurantSerializer(opened_list, many = True)
+            return JsonResponse(obj.data, safe = False)
         else:
             return Response("Not an available type!")
     except Exception:
